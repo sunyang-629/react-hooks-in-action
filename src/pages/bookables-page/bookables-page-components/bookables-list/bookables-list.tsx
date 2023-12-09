@@ -1,28 +1,49 @@
-import { useState, Fragment } from "react";
+import { Fragment, ChangeEvent, useReducer } from "react";
 import { bookables, sessions, days } from "../../../../data/static.json";
 import { FaArrowRight } from "react-icons/fa";
+import reducer, { BookableActionEunm, IState } from "../../reducer/reducer";
+
+const initialState: IState = {
+  group: "Rooms",
+  bookableIndex: 0,
+  hasDetails: true,
+  bookables,
+};
 
 const BookablesList = () => {
-  const [group, setGroup] = useState<"Kit" | "Room">("Kit");
-  const bookablesInGroup = bookables.filter((b) => b.group === group);
-  const [bookableIndex, setBookableIndex] = useState<number>(1);
-  const groups = [...new Set(bookables.map((b) => b.group))];
+  const [{ group, bookableIndex, bookables, hasDetails }, dispatch] =
+    useReducer(reducer, initialState);
 
+  const bookablesInGroup = bookables.filter((b) => b.group === group);
+  const groups = [...new Set(bookables.map((b) => b.group))];
   const bookable = bookablesInGroup[bookableIndex];
 
-  const [hasDetails, setHasDetails] = useState<boolean>(false);
-
   const newBookable = () => {
-    setBookableIndex((i) => (i + 1) % bookablesInGroup.length);
+    dispatch({ type: BookableActionEunm.NEXT_BOOKABLE });
+  };
+
+  const changeGroup = (event: ChangeEvent<HTMLSelectElement>) => {
+    dispatch({
+      type: BookableActionEunm.SET_GROUP,
+      payload: event.target.value as "Kit" | "Rooms",
+    });
+  };
+
+  const changeBookable = (selectedIndex: number) => {
+    dispatch({
+      type: BookableActionEunm.SET_BOOKABLE,
+      payload: selectedIndex,
+    });
+  };
+
+  const toggleDetails = () => {
+    dispatch({ type: BookableActionEunm.TOGGLE_HAS_DETAILS });
   };
 
   return (
     <Fragment>
       <div>
-        <select
-          value={group}
-          onChange={(e) => setGroup(e.target.value as "Kit" | "Room")}
-        >
+        <select value={group} onChange={changeGroup}>
           {groups.map((g) => (
             <option value={g} key={g}>
               {g}
@@ -35,7 +56,7 @@ const BookablesList = () => {
               key={b.id}
               className={i === bookableIndex ? "selected" : undefined}
             >
-              <button className="btn" onClick={() => setBookableIndex(i)}>
+              <button className="btn" onClick={() => changeBookable(i)}>
                 {b.title}
               </button>
             </li>
@@ -59,7 +80,7 @@ const BookablesList = () => {
                   <input
                     type="checkbox"
                     checked={hasDetails}
-                    onChange={() => setHasDetails((has) => !has)}
+                    onChange={toggleDetails}
                   />
                   Show Details
                 </label>
