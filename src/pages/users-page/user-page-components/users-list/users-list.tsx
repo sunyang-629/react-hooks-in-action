@@ -1,9 +1,41 @@
-import { useState, Fragment } from "react";
-import { users } from "../../../../data/static.json";
+import { useState, Fragment, useEffect } from "react";
+import { ErrorType } from "../../../bookables-page/reducer/reducer";
+import { UserType } from "../../../../model";
+import { getData } from "../../../../utils/api";
+import Spinner from "../../../../components/spinner";
+//import { users } from "../../../../data/static.json";
 
 const UsersList = () => {
+  const [error, setError] = useState<null | ErrorType>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [users, setUsers] = useState<UserType[]>([]);
+
   const [userIndex, setUserIndex] = useState<number>(0);
   const user = users[userIndex];
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const result = await getData<UserType[]>("http://localhost:3500/users");
+        setUsers(result);
+      } catch (error) {
+        setError(error as ErrorType);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  if (error) return <p>{error.message}</p>;
+
+  if (isLoading)
+    return (
+      <p>
+        <Spinner /> Loading users ...{" "}
+      </p>
+    );
 
   return (
     <Fragment>

@@ -1,22 +1,56 @@
-import { Fragment, ChangeEvent, useReducer } from "react";
+import { Fragment, ChangeEvent, useReducer, useEffect } from "react";
 import { bookables, sessions, days } from "../../../../data/static.json";
 import { FaArrowRight } from "react-icons/fa";
-import reducer, { BookableActionEunm, IState } from "../../reducer/reducer";
+import reducer, {
+  BookableActionEunm,
+  BookableType,
+  ErrorType,
+  IState,
+} from "../../reducer/reducer";
+import { getData } from "../../../../utils/api";
+import Spinner from "../../../../components/spinner";
 
 const initialState: IState = {
   group: "Rooms",
   bookableIndex: 0,
   hasDetails: true,
   bookables,
+  isLoading: true,
+  error: null,
 };
 
 const BookablesList = () => {
-  const [{ group, bookableIndex, bookables, hasDetails }, dispatch] =
-    useReducer(reducer, initialState);
+  const [
+    { group, bookableIndex, bookables, hasDetails, error, isLoading },
+    dispatch,
+  ] = useReducer(reducer, initialState);
 
   const bookablesInGroup = bookables.filter((b) => b.group === group);
   const groups = [...new Set(bookables.map((b) => b.group))];
   const bookable = bookablesInGroup[bookableIndex];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch({ type: BookableActionEunm.FETCH_BOOKABLES_REQUEST });
+
+      try {
+        const result = await getData<BookableType[]>(
+          "http://localhost:3500/bookables"
+        );
+        dispatch({
+          type: BookableActionEunm.FETCH_BOOKABLES_SUCCESS,
+          payload: result,
+        });
+      } catch (error) {
+        dispatch({
+          type: BookableActionEunm.FETCH_BOOKABLES_ERROR,
+          payload: error as ErrorType,
+        });
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const newBookable = () => {
     dispatch({ type: BookableActionEunm.NEXT_BOOKABLE });
@@ -39,6 +73,15 @@ const BookablesList = () => {
   const toggleDetails = () => {
     dispatch({ type: BookableActionEunm.TOGGLE_HAS_DETAILS });
   };
+
+  if (error) return <p>{error.message}</p>;
+
+  if (isLoading)
+    return (
+      <p>
+        <Spinner /> Loading bookables ...{" "}
+      </p>
+    );
 
   return (
     <Fragment>
