@@ -1,7 +1,12 @@
-import React, { FC, useReducer } from "react";
+import React, { FC, useReducer, useState } from "react";
 import reducer, { BookingActionEunm } from "../../reducer/reducer";
 import { getWeek } from "../../../../utils/date-wrangler";
-import { FaCalendarDay, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import {
+  FaCalendarCheck,
+  FaCalendarDay,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
 
 interface IWeekPickerProps {
   date: Date;
@@ -10,6 +15,23 @@ interface IWeekPickerProps {
 const WeekPicker: FC<IWeekPickerProps> = ({ date }) => {
   //** passing the third argument here for obtaining the start date and end date of the week */
   const [week, dispatch] = useReducer(reducer, date, getWeek);
+  const [dateText, setDateText] = useState<string>("2023-12-24");
+  // const textboxRef = useRef<HTMLInputElement | null>(null);
+
+  // const goToDate = () => {
+  //   if (textboxRef.current)
+  //     dispatch({
+  //       type: BookingActionEunm.SET_DATE,
+  //       payload: textboxRef.current.value,
+  //     });
+  // };
+
+  const goToDate = () => {
+    dispatch({
+      type: BookingActionEunm.SET_DATE,
+      payload: dateText,
+    });
+  };
 
   return (
     <div>
@@ -29,6 +51,22 @@ const WeekPicker: FC<IWeekPickerProps> = ({ date }) => {
           <FaCalendarDay />
           <span>Today</span>
         </button>
+
+        <span>
+          <input
+            type="text"
+            // ref={textboxRef}
+            // placeholder="e.g. 2020-09-02"
+            // defaultValue={"2023-12-24"}
+            value={dateText}
+            onChange={(e) => setDateText(e.target.value)}
+          />
+
+          <button className="go btn" onClick={goToDate}>
+            <FaCalendarCheck />
+            <span>Go</span>
+          </button>
+        </span>
 
         <button
           className="btn"

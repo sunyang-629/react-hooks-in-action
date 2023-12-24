@@ -1,4 +1,4 @@
-import { Fragment, ChangeEvent, useReducer, useEffect } from "react";
+import { Fragment, ChangeEvent, useReducer, useEffect, useRef } from "react";
 import { bookables, sessions, days } from "../../../../data/static.json";
 import { FaArrowRight } from "react-icons/fa";
 import reducer, {
@@ -29,6 +29,9 @@ const BookablesList = () => {
   const groups = [...new Set(bookables.map((b) => b.group))];
   const bookable = bookablesInGroup[bookableIndex];
 
+  // const timerRef = useRef<number | null>(null);
+  const nextButtonRef = useRef<HTMLButtonElement | null>(null);
+
   useEffect(() => {
     const fetchData = async () => {
       dispatch({ type: BookableActionEunm.FETCH_BOOKABLES_REQUEST });
@@ -52,6 +55,18 @@ const BookablesList = () => {
     fetchData();
   }, []);
 
+  // useEffect(() => {
+  //   timerRef.current = setInterval(() => {
+  //     dispatch({ type: BookableActionEunm.NEXT_BOOKABLE });
+  //   }, 3000);
+
+  //   return stopPresentation;
+  // }, []);
+
+  // const stopPresentation = () => {
+  //   if (timerRef.current) clearInterval(timerRef.current);
+  // };
+
   const newBookable = () => {
     dispatch({ type: BookableActionEunm.NEXT_BOOKABLE });
   };
@@ -68,6 +83,9 @@ const BookablesList = () => {
       type: BookableActionEunm.SET_BOOKABLE,
       payload: selectedIndex,
     });
+    if (nextButtonRef.current) {
+      nextButtonRef.current.focus();
+    }
   };
 
   const toggleDetails = () => {
@@ -106,7 +124,12 @@ const BookablesList = () => {
           ))}
         </ul>
         <p>
-          <button className="btn" onClick={newBookable} autoFocus>
+          <button
+            className="btn"
+            onClick={newBookable}
+            autoFocus
+            ref={nextButtonRef}
+          >
             <FaArrowRight />
             <span>Next</span>
           </button>
@@ -127,6 +150,9 @@ const BookablesList = () => {
                   />
                   Show Details
                 </label>
+                {/* <button className="btn" onClick={stopPresentation}>
+                  Stop
+                </button> */}
               </span>
             </div>
 
