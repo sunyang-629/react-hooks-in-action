@@ -1,9 +1,9 @@
-import { BookablesList } from "./bookables-page-components";
+import { BookablesView } from "./bookables-page-components";
 
 const BookablesPage = () => {
   return (
     <main className="bookables-page">
-      <BookablesList />
+      <BookablesView />
     </main>
   );
 };

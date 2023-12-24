@@ -1,7 +1,6 @@
 export enum BookableActionEunm {
   SET_GROUP = "SET_GROUP",
   SET_BOOKABLE = "SET_BOOKABLE",
-  TOGGLE_HAS_DETAILS = "TOGGLE_HAS_DETAILS",
   NEXT_BOOKABLE = "NEXT_BOOKABLE",
   FETCH_BOOKABLES_REQUEST = "FETCH_BOOKABLES_REQUEST",
   FETCH_BOOKABLES_SUCCESS = "FETCH_BOOKABLES_SUCCESS",
@@ -24,7 +23,6 @@ export type ErrorType = {
 export interface IState {
   group: "Kit" | "Rooms";
   bookableIndex: number;
-  hasDetails: boolean;
   bookables: BookableType[];
   isLoading: boolean;
   error: null | ErrorType;
@@ -38,10 +36,6 @@ interface ISetGroupAction {
 interface ISetBookableAction {
   type: BookableActionEunm.SET_BOOKABLE;
   payload: number;
-}
-
-interface IToggleHasDetailsAction {
-  type: BookableActionEunm.TOGGLE_HAS_DETAILS;
 }
 
 interface INextBookableAction {
@@ -62,10 +56,9 @@ interface IFetchBookableErrorAction {
   payload: null | ErrorType;
 }
 
-type IAction =
+export type IAction =
   | ISetGroupAction
   | ISetBookableAction
-  | IToggleHasDetailsAction
   | INextBookableAction
   | IFetchBookableRequestAction
   | IFetchBookableSuccessAction
@@ -84,12 +77,6 @@ export default function reducer(state: IState, action: IAction) {
       return {
         ...state,
         bookableIndex: action.payload,
-      };
-
-    case BookableActionEunm.TOGGLE_HAS_DETAILS:
-      return {
-        ...state,
-        hasDetails: !state.hasDetails,
       };
 
     case BookableActionEunm.NEXT_BOOKABLE: {
