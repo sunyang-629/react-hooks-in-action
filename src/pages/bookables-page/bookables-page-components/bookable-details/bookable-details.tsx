@@ -3,7 +3,7 @@ import { BookableType } from "../../reducer/reducer";
 import { days, sessions } from "../../../../data/static.json";
 
 interface IBookableDetailsProps {
-  bookable: BookableType;
+  bookable?: BookableType | null;
 }
 
 const BookableDetails: FC<IBookableDetailsProps> = ({ bookable }) => {

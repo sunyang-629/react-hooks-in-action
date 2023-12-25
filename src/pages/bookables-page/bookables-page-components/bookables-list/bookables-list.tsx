@@ -1,66 +1,61 @@
-import { ChangeEvent, useEffect, useRef, FC } from "react";
+import { ChangeEvent, useEffect, useRef, FC, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import {
-  BookableActionEunm,
-  BookableType,
-  ErrorType,
-  IAction,
-  IState,
-} from "../../reducer/reducer";
+import { BookableType, ErrorType } from "../../reducer/reducer";
 import { getData } from "../../../../utils/api";
 import Spinner from "../../../../components/spinner";
 
 interface IBookablesListProps {
-  state: IState;
-  dispatch: React.Dispatch<IAction>;
+  bookable?: BookableType | null;
+  setBookable: React.Dispatch<
+    React.SetStateAction<BookableType | null | undefined>
+  >;
 }
 
-const BookablesList: FC<IBookablesListProps> = ({ state, dispatch }) => {
-  const { group, bookableIndex, bookables } = state;
-  const { isLoading, error } = state;
+const BookablesList: FC<IBookablesListProps> = ({ bookable, setBookable }) => {
+  const [bookables, setBookables] = useState<BookableType[]>([]);
+  const [error, setError] = useState<null | ErrorType>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const group = bookable?.group as "Kit" | "Rooms";
   const bookablesInGroup = bookables.filter((b) => b.group === group);
   const groups = [...new Set(bookables.map((b) => b.group))];
   const nextButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      dispatch({ type: BookableActionEunm.FETCH_BOOKABLES_REQUEST });
-
       try {
-        const result = await getData<BookableType[]>(
+        const bookablesResult = await getData<BookableType[]>(
           "http://localhost:3500/bookables"
         );
-        dispatch({
-          type: BookableActionEunm.FETCH_BOOKABLES_SUCCESS,
-          payload: result,
-        });
+        setBookable(bookablesResult[0]);
+        setBookables(bookablesResult);
       } catch (error) {
-        dispatch({
-          type: BookableActionEunm.FETCH_BOOKABLES_ERROR,
-          payload: error as ErrorType,
-        });
+        setError(error as ErrorType);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [dispatch]);
+  }, [setBookable]);
 
   const newBookable = () => {
-    dispatch({ type: BookableActionEunm.NEXT_BOOKABLE });
+    if (!bookable) return;
+    const i = bookablesInGroup.indexOf(bookable);
+    const nextIndex = (i + 1) % bookablesInGroup.length;
+    const nextBookable = bookablesInGroup[nextIndex];
+    setBookable(nextBookable);
   };
 
   const changeGroup = (event: ChangeEvent<HTMLSelectElement>) => {
-    dispatch({
-      type: BookableActionEunm.SET_GROUP,
-      payload: event.target.value as "Kit" | "Rooms",
-    });
+    const bookablesInSelectedGroup = bookables.filter(
+      (b) => b.group === (event.target.value as "Kit" | "Rooms")
+    );
+    setBookable(bookablesInSelectedGroup[0]);
   };
 
-  const changeBookable = (selectedIndex: number) => {
-    dispatch({
-      type: BookableActionEunm.SET_BOOKABLE,
-      payload: selectedIndex,
-    });
+  const changeBookable = (selectedBookable: BookableType) => {
+    setBookable(selectedBookable);
     if (nextButtonRef.current) {
       nextButtonRef.current.focus();
     }
@@ -85,12 +80,12 @@ const BookablesList: FC<IBookablesListProps> = ({ state, dispatch }) => {
         ))}
       </select>
       <ul className="bookables items-list-nav">
-        {bookablesInGroup.map((b, i) => (
+        {bookablesInGroup.map((b) => (
           <li
             key={b.id}
-            className={i === bookableIndex ? "selected" : undefined}
+            className={b.id === bookable?.id ? "selected" : undefined}
           >
-            <button className="btn" onClick={() => changeBookable(i)}>
+            <button className="btn" onClick={() => changeBookable(b)}>
               {b.title}
             </button>
           </li>
