@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Spinner from "../../spinner/spinner";
-import { UserType } from "../../../model";
+import { UserType } from "../../../models";
 
 const UserPicker = () => {
   const [users, setUsers] = useState<UserType[] | null>(null);

@@ -1,4 +1,4 @@
-import { Fragment, FC, useState, useEffect } from "react";
+import { Fragment, FC, useState } from "react";
 
 import { BookableType } from "../../reducer/reducer";
 import { BookableDetails, BookablesList } from "..";

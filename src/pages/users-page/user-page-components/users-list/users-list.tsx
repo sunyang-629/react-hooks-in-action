@@ -1,6 +1,6 @@
 import { useState, Fragment, useEffect } from "react";
 import { ErrorType } from "../../../bookables-page/reducer/reducer";
-import { UserType } from "../../../../model";
+import { UserType } from "../../../../models";
 import { getData } from "../../../../utils/api";
 import Spinner from "../../../../components/spinner";
 //import { users } from "../../../../data/static.json";

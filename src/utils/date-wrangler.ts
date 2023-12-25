@@ -22,4 +22,6 @@ const getWeek = (
   };
 };
 
-export { addDays, getWeek };
+const shortISO = (date: Date) => date.toISOString().split("T")[0];
+
+export { addDays, getWeek, shortISO };

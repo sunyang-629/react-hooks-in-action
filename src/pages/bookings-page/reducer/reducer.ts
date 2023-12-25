@@ -1,3 +1,4 @@
+import { IWeek } from "../../../models";
 import { getWeek } from "../../../utils/date-wrangler";
 
 export enum BookingActionEunm {
@@ -7,11 +8,7 @@ export enum BookingActionEunm {
   SET_DATE = "SET_DATE",
 }
 
-export interface IState {
-  date: Date;
-  start: Date;
-  end: Date;
-}
+export interface IState extends IWeek {}
 
 interface INextWeekAction {
   type: BookingActionEunm.NEXT_WEEK;
@@ -30,7 +27,7 @@ interface ISetDateAction {
   payload: string;
 }
 
-type IAction =
+export type IAction =
   | INextWeekAction
   | IPrevWeekAction
   | ITodayAction
