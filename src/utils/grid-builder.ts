@@ -23,6 +23,7 @@ const getGrid = (bookable: BookableType, startDate: Date) => {
           date,
           bookableId: bookable.id,
           title: "",
+          notes: undefined,
         })
     );
   });
@@ -47,6 +48,7 @@ const transformBookings = (bookingsArray: BookingType[]) => {
       date,
       bookableId,
       title,
+      notes: undefined,
     };
     return bookings;
   }, {} as GridType);

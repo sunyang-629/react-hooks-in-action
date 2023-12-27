@@ -1,8 +1,9 @@
-import { useState, Fragment, useEffect } from "react";
+import { useState, Fragment, useEffect, useContext } from "react";
 import { ErrorType } from "../../../bookables-page/reducer/reducer";
 import { UserType } from "../../../../models";
 import { getData } from "../../../../utils/api";
 import Spinner from "../../../../components/spinner";
+import { UserContext } from "../../../../components/user";
 //import { users } from "../../../../data/static.json";
 
 const UsersList = () => {
@@ -10,7 +11,9 @@ const UsersList = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [users, setUsers] = useState<UserType[]>([]);
 
-  const [userIndex, setUserIndex] = useState<number>(0);
+  const localUser = useContext(UserContext)?.user;
+
+  const [userIndex, setUserIndex] = useState<number>((localUser?.id ?? 1) - 1);
   const user = users[userIndex];
 
   useEffect(() => {

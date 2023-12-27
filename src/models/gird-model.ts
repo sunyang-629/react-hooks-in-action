@@ -3,6 +3,7 @@ export type GridCellType = {
   date: string;
   bookableId: number;
   title: string;
+  notes: string | undefined;
 };
 
 export type GridType = {

@@ -3,7 +3,7 @@ import { getWeek } from "../../../../utils/date-wrangler";
 import { BookableType } from "../../../bookables-page/reducer/reducer";
 import reducer from "../../reducer/reducer";
 import WeekPicker from "../week-picker";
-import { BookingsGrid } from "..";
+import { BookingDetails, BookingsGrid } from "..";
 import { GridCellType } from "../../../../models";
 
 interface IBookingsProps {
@@ -25,6 +25,7 @@ const Bookings: FC<IBookingsProps> = ({ bookable }) => {
           setBooking={setBooking}
         />
       </div>
+      <BookingDetails booking={booking} bookable={bookable} />
     </div>
   );
 };
