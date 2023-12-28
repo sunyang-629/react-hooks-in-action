@@ -1,12 +1,9 @@
-import React, { FC, Fragment, useEffect, useMemo, useState } from "react";
-import { BookingType, GridCellType, GridType, IWeek } from "../../../../models";
-import {
-  BookableType,
-  ErrorType,
-} from "../../../bookables-page/reducer/reducer";
-import { getGrid, transformBookings } from "../../../../utils/grid-builder";
-import { getBookings } from "../../../../utils/api";
+import React, { FC, Fragment } from "react";
+import { GridCellType, IWeek } from "../../../../models";
+import { BookableType } from "../../../bookables-page/reducer/reducer";
 import Spinner from "../../../../components/spinner";
+import useBookings from "../../../../hooks/use-bookings/use-bookings";
+import useGrid from "../../../../hooks/use-grid/use-grid";
 
 interface IBookingsGridProps {
   week: IWeek;
@@ -21,43 +18,13 @@ const BookingsGrid: FC<IBookingsGridProps> = ({
   booking,
   setBooking,
 }) => {
-  const [bookings, setBookings] = useState<GridType | null>(null);
-  const [error, setError] = useState<ErrorType | null>(null);
+  const {
+    data: bookings,
+    status,
+    error,
+  } = useBookings(bookable?.id ?? -1, week.start, week.end);
 
-  const { grid, sessions, dates } = useMemo(
-    () =>
-      bookable
-        ? getGrid(bookable, week.start)
-        : { grid: {}, sessions: [], dates: [] },
-    [bookable, week.start]
-  );
-
-  useEffect(() => {
-    let doUpdate: boolean = true;
-
-    const fetchDate = async () => {
-      if (!bookable) return;
-      setBookings(null);
-      setError(null);
-      setBooking(null);
-
-      try {
-        const result = await getBookings<BookingType[]>(
-          bookable.id,
-          week.start,
-          week.end
-        );
-        if (doUpdate) setBookings(transformBookings(result));
-      } catch (error) {
-        setError(error as ErrorType);
-      }
-    };
-
-    fetchDate();
-    return () => {
-      doUpdate = false;
-    };
-  }, [week, bookable, setBooking]);
+  const { grid, sessions, dates } = useGrid(bookable, week.start);
 
   const renderCell = (session: string, date: string) => {
     const cellData = bookings?.[session]?.[date] || grid[session][date];
@@ -67,24 +34,28 @@ const BookingsGrid: FC<IBookingsGridProps> = ({
       <td
         key={date}
         className={isSelected ? "selected" : undefined}
-        onClick={bookings ? () => setBooking(cellData) : undefined}
+        onClick={status === "success" ? () => setBooking(cellData) : undefined}
       >
         {cellData.title}
       </td>
     );
   };
 
-  if (Object.keys(grid).length === 0) return <p>Loading...</p>;
+  if (!grid) return <p>Waiting for bookable and week details...</p>;
 
   return (
     <Fragment>
-      {error && (
+      {status === "error" && (
         <p className="bookingsError">
-          {`There was a problem loading the bookings date (${error.message})`}
+          {`There was a problem loading the bookings date (${error})`}
         </p>
       )}
 
-      <table className={bookings ? "bookingsGrid active" : "bookingsGrid"}>
+      <table
+        className={
+          status === "success" ? "bookingsGrid active" : "bookingsGrid"
+        }
+      >
         <thead>
           <tr>
             <th>

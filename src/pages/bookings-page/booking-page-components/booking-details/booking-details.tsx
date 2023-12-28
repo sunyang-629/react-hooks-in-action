@@ -1,9 +1,9 @@
-import { FC, useContext } from "react";
+import { FC } from "react";
 import { FaEdit } from "react-icons/fa";
 import { GridCellType } from "../../../../models";
 import { BookableType } from "../../../bookables-page/reducer/reducer";
 import { Booking } from "..";
-import { UserContext } from "../../../../components/user";
+import { useUser } from "../../../../hooks";
 
 interface IBookingDetailsProps {
   booking: GridCellType | null;
@@ -11,8 +11,7 @@ interface IBookingDetailsProps {
 }
 
 const BookingDetails: FC<IBookingDetailsProps> = ({ booking, bookable }) => {
-  const user = useContext(UserContext)?.user;
-
+  const [user] = useUser();
   const isBooker = booking && user && booking.bookableId === user.id;
 
   return (

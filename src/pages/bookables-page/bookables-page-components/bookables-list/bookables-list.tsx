@@ -1,8 +1,8 @@
-import { ChangeEvent, useEffect, useRef, FC, useState } from "react";
+import { ChangeEvent, useEffect, useRef, FC } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import { BookableType, ErrorType } from "../../reducer/reducer";
-import { getData } from "../../../../utils/api";
+import { BookableType } from "../../reducer/reducer";
 import Spinner from "../../../../components/spinner";
+import useFetch from "../../../../hooks/use-fetch/use-fetch";
 
 interface IBookablesListProps {
   bookable?: BookableType | null;
@@ -12,9 +12,11 @@ interface IBookablesListProps {
 }
 
 const BookablesList: FC<IBookablesListProps> = ({ bookable, setBookable }) => {
-  const [bookables, setBookables] = useState<BookableType[]>([]);
-  const [error, setError] = useState<null | ErrorType>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const {
+    data: bookables = [],
+    status,
+    error,
+  } = useFetch<BookableType[]>("http://localhost:3500/bookables");
 
   const group = bookable?.group as "Kit" | "Rooms";
   const bookablesInGroup = bookables.filter((b) => b.group === group);
@@ -22,22 +24,8 @@ const BookablesList: FC<IBookablesListProps> = ({ bookable, setBookable }) => {
   const nextButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const bookablesResult = await getData<BookableType[]>(
-          "http://localhost:3500/bookables"
-        );
-        setBookable(bookablesResult[0]);
-        setBookables(bookablesResult);
-      } catch (error) {
-        setError(error as ErrorType);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [setBookable]);
+    setBookable(bookables[0]);
+  }, [bookables, setBookable]);
 
   const newBookable = () => {
     if (!bookable) return;
@@ -61,9 +49,9 @@ const BookablesList: FC<IBookablesListProps> = ({ bookable, setBookable }) => {
     }
   };
 
-  if (error) return <p>{error.message}</p>;
+  if (status === "error") return <p>{error?.message}</p>;
 
-  if (isLoading)
+  if (status === "loading")
     return (
       <p>
         <Spinner /> Loading bookables ...{" "}

@@ -1,39 +1,43 @@
-import { useState, Fragment, useEffect, useContext } from "react";
-import { ErrorType } from "../../../bookables-page/reducer/reducer";
+import { useState, Fragment } from "react";
 import { UserType } from "../../../../models";
-import { getData } from "../../../../utils/api";
 import Spinner from "../../../../components/spinner";
-import { UserContext } from "../../../../components/user";
-//import { users } from "../../../../data/static.json";
+import { useUser } from "../../../../hooks";
+import useFetch from "../../../../hooks/use-fetch/use-fetch";
 
 const UsersList = () => {
-  const [error, setError] = useState<null | ErrorType>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [users, setUsers] = useState<UserType[]>([]);
+  // const [error, setError] = useState<null | ErrorType>(null);
+  // const [isLoading, setIsLoading] = useState<boolean>(true);
+  // const [users, setUsers] = useState<UserType[]>([]);
 
-  const localUser = useContext(UserContext)?.user;
+  const {
+    data: users = [],
+    status,
+    error,
+  } = useFetch<UserType[]>("http://localhost:3500/users");
+
+  const [localUser] = useUser();
 
   const [userIndex, setUserIndex] = useState<number>((localUser?.id ?? 1) - 1);
   const user = users[userIndex];
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const result = await getData<UserType[]>("http://localhost:3500/users");
-        setUsers(result);
-      } catch (error) {
-        setError(error as ErrorType);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     try {
+  //       const result = await getData<UserType[]>("http://localhost:3500/users");
+  //       setUsers(result);
+  //     } catch (error) {
+  //       setError(error as ErrorType);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
 
-    fetchUsers();
-  }, []);
+  //   fetchUsers();
+  // }, []);
 
-  if (error) return <p>{error.message}</p>;
+  if (status === "error") return <p>{error?.message}</p>;
 
-  if (isLoading)
+  if (status === "loading")
     return (
       <p>
         <Spinner /> Loading users ...{" "}

@@ -1,22 +1,15 @@
-import { useState, useEffect, ChangeEvent, useContext } from "react";
+import { ChangeEvent } from "react";
 import Spinner from "../../spinner/spinner";
 import { UserType } from "../../../models";
-import { UserContext } from "..";
+import { useUser } from "../../../hooks";
+import useFetch from "../../../hooks/use-fetch/use-fetch";
 
 const UserPicker = () => {
-  const [users, setUsers] = useState<UserType[] | null>(null);
-  //const [user, setUser] = useState<UserType | null>(null);
-  const user = useContext(UserContext)?.user;
-  const setUser = useContext(UserContext)?.setUser;
+  const { data: users = [], status } = useFetch<UserType[]>(
+    "http://localhost:3500/users"
+  );
 
-  useEffect(() => {
-    fetch("http://localhost:3500/users")
-      .then((res) => res.json())
-      .then((data) => {
-        setUsers(data);
-        if (setUser) setUser(data[0]);
-      });
-  }, [setUser]);
+  const [user, setUser] = useUser();
 
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectId = parseInt(e.target.value, 10);
@@ -24,32 +17,23 @@ const UserPicker = () => {
     if (selectedUser && setUser) setUser(selectedUser);
   };
 
-  if (users === null) return <Spinner />;
+  if (status === "loading") {
+    return <Spinner />;
+  }
+
+  if (status === "error") {
+    return <span>Error!</span>;
+  }
 
   return (
-    <>
-      <select onChange={handleSelect} value={user?.id}>
-        {users.map((u) => (
-          <option key={u.id} value={u.id}>
-            {u.name}
-          </option>
-        ))}
-      </select>
-      {/* <UserTest /> */}
-    </>
+    <select onChange={handleSelect} value={user?.id}>
+      {users.map((u) => (
+        <option key={u.id} value={u.id}>
+          {u.name}
+        </option>
+      ))}
+    </select>
   );
 };
 
 export default UserPicker;
-
-// const UserTest = () => {
-//   const [state] = useState<null>(null);
-
-//   console.log("in function");
-
-//   useEffect(() => {
-//     console.log("in effect function");
-//   }, [state]);
-
-//   return <p>{state}</p>;
-// };
