@@ -24,4 +24,6 @@ const getWeek = (
 
 const shortISO = (date: Date) => date.toISOString().split("T")[0];
 
-export { addDays, getWeek, shortISO };
+const isDate = (date: string) => !isNaN(Date.parse(date));
+
+export { addDays, getWeek, shortISO, isDate };
