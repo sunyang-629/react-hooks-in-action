@@ -3,6 +3,11 @@ import BookingsPage from "../pages/bookings-page";
 import BookablesPage from "../pages/bookables-page";
 import UsersPage from "../pages/users-page";
 import MainLayout from "../layouts/main-layout";
+import {
+  BookableEdit,
+  BookableNew,
+  BookablesView,
+} from "../pages/bookables-page/bookables-page-components";
 
 const router = createBrowserRouter([
   {
@@ -12,10 +17,12 @@ const router = createBrowserRouter([
       { path: "/bookings", element: <BookingsPage /> },
       {
         path: "/bookables",
+        element: <BookablesPage />,
         children: [
-          { index: true, element: <BookablesPage /> },
-          { path: ":id", element: <BookablesPage /> },
-          { path: ":id/edit", element: <div>edit page</div> },
+          { index: true, element: <BookablesView /> },
+          { path: ":id", element: <BookablesView /> },
+          { path: ":id/edit", element: <BookableEdit /> },
+          { path: "new", element: <BookableNew /> },
         ],
       },
       { path: "/users", element: <UsersPage /> },

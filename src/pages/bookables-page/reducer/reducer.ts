@@ -8,7 +8,7 @@ export enum BookableActionEunm {
 }
 
 export type BookableType = {
-  id: number;
+  id?: number;
   group: string;
   title: string;
   notes: string;

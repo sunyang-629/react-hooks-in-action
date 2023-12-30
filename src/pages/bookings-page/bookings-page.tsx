@@ -1,21 +1,20 @@
-// import { useState } from "react";
 import { Bookings } from "./booking-page-components";
 import { BookableType } from "../bookables-page/reducer/reducer";
 import { BookablesList } from "../bookables-page/bookables-page-components";
-import { useBookingParams, useFetch } from "../../hooks";
+import { useBookingParams } from "../../hooks";
 import { shortISO } from "../../utils/date-wrangler";
 import PageSpinner from "../../components/page-spinner";
+import { getData } from "../../utils/api";
+import { useQuery } from "react-query";
 
 const BookingsPage = () => {
-  // const [bookable, setBookable] = useState<BookableType | null | undefined>(
-  //   null
-  // );
-
   const {
     data: bookables = [],
     status,
     error,
-  } = useFetch<BookableType[]>("http://localhost:3500/bookables");
+  } = useQuery<BookableType[], Error>("bookables", () =>
+    getData<BookableType[]>("http://localhost:3500/bookables")
+  );
 
   const { date, bookableId } = useBookingParams();
 

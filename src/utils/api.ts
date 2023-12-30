@@ -21,4 +21,17 @@ const getBookings = <T>(bookableId: number, startDate: Date, endDate: Date) => {
   return getData<T>(`${urlRoot}?${query}`);
 };
 
-export { getData, getBookings };
+const createItem = <T>(url: string, item: T): Promise<T> => {
+  return fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(item),
+  }).then((r) => {
+    if (!r.ok) {
+      throw new Error("There was a problem creating the item!");
+    }
+    return r.json() as Promise<T>;
+  });
+};
+
+export { getData, getBookings, createItem };

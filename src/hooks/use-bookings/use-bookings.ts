@@ -1,8 +1,9 @@
 import { shortISO } from "../../utils/date-wrangler";
-import { useFetch } from "..";
 import { BookingType, GridType } from "../../models";
 import { transformBookings } from "../../utils/grid-builder";
 import { UseFetchResultType } from "../use-fetch/use-fetch";
+import { useQuery } from "react-query";
+import { getData } from "../../utils/api";
 
 const useBookings = (
   bookableId: number,
@@ -17,7 +18,10 @@ const useBookings = (
   const queryString =
     `bookableId=${bookableId}` + `&date_gte=${start}&date_lte=${end}`;
 
-  const query = useFetch<BookingType[]>(`${urlRoot}?${queryString}`);
+  const query = useQuery<BookingType[], Error>(
+    ["bookings", bookableId, start, end],
+    () => getData<BookingType[]>(`${urlRoot}?${queryString}`)
+  );
 
   return {
     ...query,

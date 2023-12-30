@@ -2,38 +2,22 @@ import { useState, Fragment } from "react";
 import { UserType } from "../../../../models";
 import Spinner from "../../../../components/spinner";
 import { useUser } from "../../../../hooks";
-import useFetch from "../../../../hooks/use-fetch/use-fetch";
+import { useQuery } from "react-query";
+import { getData } from "../../../../utils/api";
 
 const UsersList = () => {
-  // const [error, setError] = useState<null | ErrorType>(null);
-  // const [isLoading, setIsLoading] = useState<boolean>(true);
-  // const [users, setUsers] = useState<UserType[]>([]);
-
   const {
     data: users = [],
     status,
     error,
-  } = useFetch<UserType[]>("http://localhost:3500/users");
+  } = useQuery<UserType[], Error>("users", () =>
+    getData<UserType[]>("http://localhost:3500/users")
+  );
 
   const [localUser] = useUser();
 
   const [userIndex, setUserIndex] = useState<number>((localUser?.id ?? 1) - 1);
   const user = users[userIndex];
-
-  // useEffect(() => {
-  //   const fetchUsers = async () => {
-  //     try {
-  //       const result = await getData<UserType[]>("http://localhost:3500/users");
-  //       setUsers(result);
-  //     } catch (error) {
-  //       setError(error as ErrorType);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   fetchUsers();
-  // }, []);
 
   if (status === "error") return <p>{error?.message}</p>;
 

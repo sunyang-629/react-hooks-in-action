@@ -1,9 +1,9 @@
-import { BookablesView } from "./bookables-page-components";
+import { Outlet } from "react-router-dom";
 
 const BookablesPage = () => {
   return (
     <main className="bookables-page">
-      <BookablesView />
+      <Outlet />
     </main>
   );
 };
