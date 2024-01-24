@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormState } from "../../../../hooks";
 import { BookableType } from "../../reducer/reducer";

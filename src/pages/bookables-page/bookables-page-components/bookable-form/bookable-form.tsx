@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { IFormState } from "../../../../hooks/use-form-state/use-form-state";
 import { Link } from "react-router-dom";
 import { FaCloudUploadAlt, FaTrash, FaWindowClose } from "react-icons/fa";

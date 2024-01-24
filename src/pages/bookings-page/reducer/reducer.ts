@@ -45,6 +45,5 @@ export default function reducer(state: IState, action: IAction) {
       return getWeek(new Date(action.payload));
     default:
       return state;
-    //throw new Error(`Unknown action type: ${action.type}`);
   }
 }

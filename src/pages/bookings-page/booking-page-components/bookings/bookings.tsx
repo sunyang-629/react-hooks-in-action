@@ -26,7 +26,8 @@ const Bookings: FC<IBookingsProps> = ({ bookable }) => {
   );
   let selectedBooking = booking;
   if (booking && bookings) {
-    selectedBooking = bookings[booking.session][booking.date];
+    console.log({ bookings, session: booking.session });
+    selectedBooking = bookings[booking.session]?.[booking.date];
   }
 
   useEffect(() => {

@@ -1,4 +1,3 @@
-import React from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
 import { getData } from "../../../../utils/api";
@@ -28,9 +27,6 @@ const BookableEdit = () => {
   const handleSubmit = () => {};
 
   if (isLoading) return <PageSpinner />;
-  //   const formState = useFormState()
-
-  //   if(typeof formState === IFormState<undefined>)
 
   return (
     <BookableForm
