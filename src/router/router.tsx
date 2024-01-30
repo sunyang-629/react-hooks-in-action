@@ -1,7 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-// import BookingsPage from "../pages/bookings-page";
-// import BookablesPage from "../pages/bookables-page";
-// import UsersPage from "../pages/users-page";
 import MainLayout from "../layouts/main-layout";
 import {
   BookableEdit,
@@ -11,9 +8,9 @@ import {
 import { Fragment, lazy } from "react";
 import ErrorBoundary from "../components/error-boundary";
 
-const BookingsPage = lazy(() => import("../pages/bookings-page"));
-const BookablesPage = lazy(() => import("../pages/bookables-page"));
-const UsersPage = lazy(() => import("../pages/users-page"));
+const LazyBookingsPage = lazy(() => import("../pages/bookings-page"));
+const LazyBookablesPage = lazy(() => import("../pages/bookables-page"));
+const LazyUsersPage = lazy(() => import("../pages/users-page"));
 
 const router = createBrowserRouter([
   {
@@ -31,10 +28,10 @@ const router = createBrowserRouter([
       </ErrorBoundary>
     ),
     children: [
-      { path: "/bookings", element: <BookingsPage /> },
+      { path: "/bookings", element: <LazyBookingsPage /> },
       {
         path: "/bookables",
-        element: <BookablesPage />,
+        element: <LazyBookablesPage />,
         children: [
           { index: true, element: <BookablesView /> },
           { path: ":id", element: <BookablesView /> },
@@ -42,7 +39,7 @@ const router = createBrowserRouter([
           { path: "new", element: <BookableNew /> },
         ],
       },
-      { path: "/users", element: <UsersPage /> },
+      { path: "/users", element: <LazyUsersPage /> },
     ],
   },
 ]);

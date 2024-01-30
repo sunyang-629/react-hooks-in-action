@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
 import Spinner from "../../spinner/spinner";
 import { UserType } from "../../../models";
 import { useUser } from "../../../hooks";
@@ -12,6 +12,10 @@ const UserPicker = () => {
   );
 
   const [user, setUser] = useUser();
+
+  useEffect(() => {
+    if (users) setUser(users[0]);
+  }, [users, setUser]);
 
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectId = parseInt(e.target.value, 10);

@@ -5,17 +5,19 @@ import { BookableDetails, BookablesList } from "..";
 // import { useFetch } from "../../../../hooks";
 import { Link, useParams } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
-import PageSpinner from "../../../../components/page-spinner";
+// import PageSpinner from "../../../../components/page-spinner";
 import { useQuery } from "react-query";
 import { getData } from "../../../../utils/api";
 
 const BookablesView: FC = () => {
   const {
     data: bookables = [],
-    status,
-    error,
-  } = useQuery<BookableType[], Error>("bookables", () =>
-    getData<BookableType[]>("http://localhost:3500/bookables")
+    // status,
+    // error,
+  } = useQuery<BookableType[], Error>(
+    "bookables",
+    () => getData<BookableType[]>("http://localhost:3500/bookables"),
+    { suspense: true }
   );
 
   const { id } = useParams();
@@ -24,9 +26,9 @@ const BookablesView: FC = () => {
     ? bookables?.find((b) => b.id === parseInt(id, 10))
     : bookables[0];
 
-  if (status === "error") return <p>{error.message}</p>;
+  // if (status === "error") return <p>{error.message}</p>;
 
-  if (status === "loading") return <PageSpinner />;
+  // if (status === "loading") return <PageSpinner />;
 
   return (
     <div

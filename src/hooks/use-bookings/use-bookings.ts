@@ -20,7 +20,8 @@ const useBookings = (
 
   const query = useQuery<BookingType[], Error>(
     ["bookings", bookableId, start, end],
-    () => getData<BookingType[]>(`${urlRoot}?${queryString}`)
+    () => getData<BookingType[]>(`${urlRoot}?${queryString}`),
+    { suspense: true }
   );
 
   return {
