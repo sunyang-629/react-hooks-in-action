@@ -31,13 +31,7 @@ const BookablesView: FC = () => {
   // if (status === "loading") return <PageSpinner />;
 
   return (
-    <div
-      style={{
-        gridTemplateColumns: "1fr 3fr",
-        gridColumnGap: "40px",
-        display: "grid",
-      }}
-    >
+    <main className="bookables-page">
       <div>
         <BookablesList
           bookable={bookable}
@@ -52,7 +46,7 @@ const BookablesView: FC = () => {
         </p>
       </div>
       <BookableDetails bookable={bookable} />
-    </div>
+    </main>
   );
 };
 

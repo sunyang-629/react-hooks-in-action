@@ -5,3 +5,9 @@ export type UserType = {
   title: string;
   notes: string;
 };
+
+export type UserTodoType = {
+  id: number;
+  userId: number;
+  todo: string;
+};

@@ -35,7 +35,7 @@ const BookableForm: FC<IBookableFromProps> = ({
   const { days = [], sessions = [] } = state;
 
   return (
-    <div className="bookables-form">
+    <main className="bookables-form">
       <div className="item item-form">
         <div className="item-header">
           <h2>{handleDelete ? "Edit" : "New"} Bookable</h2>
@@ -116,7 +116,7 @@ const BookableForm: FC<IBookableFromProps> = ({
           <span>Save</span>
         </button>
       </p>
-    </div>
+    </main>
   );
 };
 

@@ -1,4 +1,4 @@
-import { FC, Suspense, useState } from "react";
+import { FC, Suspense, useDeferredValue, useState } from "react";
 import { useUser } from "../../hooks";
 import { UserDetails, UsersList } from "./user-page-components";
 import { UserType } from "../../models";
@@ -8,9 +8,13 @@ import PageSpinner from "../../components/page-spinner";
 
 const UsersPage: FC = () => {
   const [localUser] = useUser();
+  // const [ispending, startTransition] = useTransition();
   const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
   const user = selectedUser || localUser;
   const queryClient = useQueryClient();
+
+  const deferredUser = useDeferredValue(user) || user;
+  const isPending = deferredUser !== user;
 
   const switchUser = (nextUser: UserType) => {
     setSelectedUser(nextUser);
@@ -34,9 +38,9 @@ const UsersPage: FC = () => {
 
   return (
     <main className="users-page">
-      <UsersList user={user} setUser={switchUser} />
+      <UsersList user={user} setUser={switchUser} isPending={isPending} />
       <Suspense fallback={<PageSpinner />}>
-        <UserDetails userId={user.id} />
+        <UserDetails userId={deferredUser!.id} isPending={isPending} />
       </Suspense>
     </main>
   );
